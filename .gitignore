@@ -1,0 +1,3 @@
+upgit_env
+.env
+logs/*.log
