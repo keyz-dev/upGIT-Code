@@ -1,3 +1,4 @@
 upgit_env
+emie/*
 .env
 logs/*.log
