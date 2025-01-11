@@ -55,7 +55,7 @@ class MainApp:
     def open_recover(self, user_info=None):
         self.clear_frame()
         print("The frame has been cleared")
-        self.set_dimensions(width=500, height=400)
+        self.set_dimensions(width=380, height=300)
         RecoverPage(self.root, user_info, self.open_home)
     
     def clear_frame(self):

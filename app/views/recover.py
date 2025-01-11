@@ -47,23 +47,23 @@ class RecoverPage():
         # Folder Selection Section
         self.folder_var = StringVar(value="None")
         self.folder_var.trace_add("write", update_width)
-        Label(self.window, text="Select Folder", bg="white", font=custom_font).pack(padx=20, pady=10)
+        Label(self.window, text="Select Folder", bg="white", font=custom_font).pack( pady=10 )
         folder_options = self.local_repo_names if len(self.local_repo_names) > 0 else ['None']
         folder_options_menu = OptionMenu(self.window, self.folder_var, *folder_options)
         folder_options_menu.config(font=custom_font)
-        folder_options_menu.pack(padx=20, pady=10)
+        folder_options_menu.pack( pady=10 )
 
         self.result_label = Label(self.window, text="", font=custom_font, bg="white")
-        self.result_label.pack(padx=10, pady=10)
+        self.result_label.pack(pady=10)
         
         # Action Buttons
         Button(self.window, text="Recover", font=custom_font, command=self.start_recover, bg="#4CAF50", fg="white", bd=0, width=16, cursor="hand2").place(relx=0.028, rely=0.8)
-        Button(self.window, text="Cancel", font=custom_font, command= lambda user_info=self.user_info:self.open_home(user_info), bg="#f44336", fg="white", bd=0, width=16, cursor="hand2").place(relx=0.7, rely=0.8)
+        Button(self.window, text="Cancel", font=custom_font, command= lambda user_info=self.user_info:self.open_home(user_info), bg="#f44336", fg="white", bd=0, width=16, cursor="hand2").place(relx=0.6, rely=0.8)
         
         self.window.bind('<Control-r>', lambda event: self.reload_ui())    
 
     def start_recover(self):
-        self.result_label.configure(text="Recovering your data..., Please wait.")
+        self.result_label.configure(text="Recovering your data.....")
         self.window.update_idletasks()
     
         folder_name = self.folder_var.get()
