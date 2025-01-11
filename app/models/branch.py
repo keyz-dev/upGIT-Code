@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, Text, ARRAY, DateTime, Enum, For
 from app.config.database import Base
 from datetime import datetime
 from sqlalchemy.orm import relationship
-from app.models.local_branch import LocalBranch
+from app.models.local_repo import LocalRepo
 
 class Branch(Base):
     """Branch model"""
@@ -17,7 +17,7 @@ class Branch(Base):
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     """parent-child relationship with the local_branch"""
-    repos = relationship("LocalBranch", backref="branch")
+    repos = relationship("LocalRepo", backref="branch")
     
     def __repr__(self):
         """Return a string representation of the branch class"""

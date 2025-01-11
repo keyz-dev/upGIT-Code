@@ -137,9 +137,12 @@ class CLI():
             raise Exception("no internet connection found, push failed")
 
     @cli_decorator
-    def pull(self):
+    def pull(self, remote_url = None):
         self.init_git()
-        subprocess.run(['git', 'reset', '--hard', f'origin/{self.branch_name}'], cwd=self.local_dir, capture_output=True, check=True)
+        if remote_url not in [None, '', False, []]:
+            self.remote_url = remote_url
+            self.add_remote()
+            self.create_branch()    
     
         if self.is_connected():
             result = subprocess.run(
@@ -148,12 +151,13 @@ class CLI():
                 capture_output=True, 
                 check=True, 
                 text=True
-            ).stdout.strip()
-            if result:
-                self.chunk_dirs = organize_pull_files(self.local_dir)
-                if self.chunk_dirs not in [None, [], '', False]:
-                    self.delete_chunk()
-                logger.info("Pull operation successful")
+            )
+            
+            self.chunk_dirs = organize_pull_files(self.local_dir)
+            if self.chunk_dirs not in [None, [], '', False]:
+                self.delete_chunk()
+            logger.info("Pull operation successful")
+            return True
         else:
             raise Exception("no internet connection found, pull failed")
         

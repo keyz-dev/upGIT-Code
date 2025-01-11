@@ -2,8 +2,7 @@ import os
 from app.controllers import (
     local_repo as local_repo_controller,
     remote_repo as remote_repo_controller,
-    branch as branch_controller,
-    local_branch as local_branch_controller
+    branch as branch_controller
 )
 from app.models.local_repo import LocalRepo
 from datetime import datetime
@@ -37,7 +36,7 @@ def bg_backup():
                 raise Exception("No remote repository found for this user with id,  %d" % user_id)
             
             # get branch
-            branch = local_branch_controller.get_specific(column='repo_id', value=batch.id, limit=1)
+            branch = branch_controller.get_specific(column='repo_id', value=batch.id, limit=1)
             if branch in [None, False, '', []]:
                 raise Exception("No local branch found for this repo with id,  %d" % batch.id)
             

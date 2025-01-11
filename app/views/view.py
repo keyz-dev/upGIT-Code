@@ -1,6 +1,8 @@
 from app.views.home import HomePage
-from .auth.register import Register
-from .auth.login import Login
+from app.views.backup import BackupPage
+from app.views.recover import RecoverPage
+from app.views.auth.register import Register
+from app.views.auth.login import Login
 from tkinter import *
 from PIL import Image, ImageTk
 import os
@@ -15,9 +17,9 @@ class MainApp:
         icon = ImageTk.PhotoImage(icon)
         self.root.iconphoto(True, icon)
         self.root.configure(bg="#fff")
-        
+            
         self.open_login()
-        
+    
         self.root.mainloop()
 
     def set_dimensions(self, width, height):
@@ -32,7 +34,7 @@ class MainApp:
         
     def open_login(self):
         self.clear_frame()
-        self.set_dimensions(width=450, height=470)
+        self.set_dimensions(width=450, height=420)
         Login(self.root, self.open_register, self.open_home)
 
     def open_register(self):
@@ -42,8 +44,19 @@ class MainApp:
     
     def open_home(self, user_info=None):
         self.clear_frame()
-        self.set_dimensions(width=500, height=500)
-        HomePage(self.root, user_info)
+        self.set_dimensions(width=300, height=200)
+        HomePage(self.root, user_info, self.open_backup, self.open_recover)
+    
+    def open_backup(self, user_info=None):
+        self.clear_frame()
+        self.set_dimensions(width=500, height=400)
+        BackupPage(self.root, user_info, self.open_home)
+    
+    def open_recover(self, user_info=None):
+        self.clear_frame()
+        print("The frame has been cleared")
+        self.set_dimensions(width=500, height=400)
+        RecoverPage(self.root, user_info, self.open_home)
     
     def clear_frame(self):
         for widget in self.root.winfo_children():

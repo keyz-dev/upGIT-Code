@@ -59,6 +59,7 @@ def cli_decorator(func):
         except subprocess.CalledProcessError as e:
             logger.error(f"A subprocess error occurred: {e.returncode}")
             logger.error(e)
+            logger.error(e.stderr.strip())
             quit()
         except Exception as e:
             logger.error(f"An error occurred while running the CLI command: {e}")

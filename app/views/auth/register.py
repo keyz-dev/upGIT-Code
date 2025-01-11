@@ -76,7 +76,7 @@ class Register():
         # login link button
         loginBtn = Button(FormFrame, text="Login", font=('Poppins', 10), bg="white", fg="purple1", bd=0, cursor="hand2", command=self.on_login)
         loginBtn.place(relx=0.53, rely=0.79)
-        pass
+        
     def on_enter(self, event, field, value, frame=None):
         if field.get() == value:   
             field.delete(0, END)
