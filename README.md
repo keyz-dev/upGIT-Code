@@ -9,8 +9,8 @@ After being invited to the private repository,
 
 1. Clone the repository
 ```bash
-git clone https://github.com/afanyuy-caleb/upGIT.git .
-cd upGIT
+git clone https://github.com/afanyuy-caleb/upGIT-code.git .
+cd upGIT-code
 ```
 
 2. Create a virtual environment

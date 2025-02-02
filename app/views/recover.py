@@ -83,7 +83,6 @@ class RecoverPage():
         pull_status = pull(remote_url=remote_url, local_dir=folder_name, branch_name=branch.name)
         
         if pull_status:
-            # messageBox.showinfo("Recover Successful", "Recovery completed successfully!")
             self.result_label.configure(text="Data Recovery Successful!", fg="green")
         else:
             messageBox.showerror("Recover Failed", "Failed to recover repository. Please try again.")
