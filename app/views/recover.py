@@ -18,7 +18,8 @@ class RecoverPage():
         self.open_home = open_home
         self.local_repo_names = self.get_repos()
         
-        self.render()
+        if(len(self.local_repo_names) > 0):
+            self.render()
     
     def reload_ui(self):
         importlib.reload(sys.modules['app.views.home'])
@@ -31,6 +32,7 @@ class RecoverPage():
         if self.local_repos in [None, False, '', []]:
             messageBox.showerror("Fetch Error", "No Local repositories found to recover from")
             self.open_home(self.user_info)
+            
         return [value.name for value in self.local_repos]
         
     def render(self):
