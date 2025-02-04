@@ -97,6 +97,7 @@ class Register():
 
     def on_keypress(self, event):
         self.passwordEntry.config(show="*")
+        self.cpasswordEntry.config(show="*")
     
     def checkValues(self):
         if self.nameEntry.get() in ["", 'Enter username']:

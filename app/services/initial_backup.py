@@ -73,11 +73,11 @@ def new_backup(user : User, backup_object, repo):
     branch_info = check_branch(backup_object['branch_name'], repo.id)
     created_folder = check_folder(backup_object, user.id, branch_info.id)
     
-    return backup(folder=created_folder, branch=branch_info, repo=repo)
+    return backup(folder=created_folder, branch=branch_info, repo=repo, user=user)
     
 @global_exception_handler
-def backup(folder, branch, repo):
-    cli = CLI(local_dir=folder.name, branch_name=branch.name)
+def backup(folder, branch, repo, user):
+    cli = CLI(local_dir=folder.name, branch_name=branch.name, user=user)
     cli.backup(local_dir_id=folder.id, remote_url=repo.clone_url)
     
     """update the local_repo's backup status"""
