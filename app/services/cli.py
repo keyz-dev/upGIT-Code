@@ -64,6 +64,7 @@ class CLI():
         EMAIL = os.getenv('GITHUB_EMAIL')
         replacement = f"://{USERNAME}:{PAT}@"
         url = self.remote_url.replace("://", replacement)
+        # Check if the folder has a remote repo set
         result = subprocess.run(
             ['git', 'remote', '-v'], 
             cwd=self.local_dir, 
@@ -71,6 +72,7 @@ class CLI():
             check=True, 
             text=True
         )
+        
         if url not in result.stdout.strip():
             return subprocess.run(
                 ['git', 'remote', 'add', 'origin', url], 
@@ -79,7 +81,7 @@ class CLI():
                 check=True, 
                 text=True
             ).stdout.strip()  
-    
+
     @cli_decorator
     def create_branch(self):
         # check if branch exists

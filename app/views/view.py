@@ -6,6 +6,7 @@ from app.views.auth.login import Login
 from tkinter import *
 from PIL import Image, ImageTk
 import os
+from app.controllers import user as user_controller
 
 class MainApp:
     def __init__(self):
@@ -17,11 +18,30 @@ class MainApp:
         icon = ImageTk.PhotoImage(icon)
         self.root.iconphoto(True, icon)
         self.root.configure(bg="#fff")
-            
-        self.open_login()
-    
+        
+        # Check if the user has an account
+        user_info = self.get_user()
+        if not user_info:
+            self.open_login()
+        else:
+            self.open_home(user_info)
+
         self.root.mainloop()
 
+    def get_user(self):
+        dir_path = os.path.dirname(__file__)
+        id_path = os.path.join(
+            dir_path, '..', 'auth', 'user_id.txt'
+        )
+        try:
+            """Get the user information if an account exists already"""
+            with open(id_path, 'r') as fb:
+                id = fb.read()
+                
+            return user_controller.get(id)
+        except Exception as e:
+            return False
+            
     def set_dimensions(self, width, height):
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
