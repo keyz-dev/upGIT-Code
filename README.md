@@ -9,8 +9,8 @@ After being invited to the private repository,
 
 1. Clone the repository
 ```bash
-git clone https://github.com/afanyuy-caleb/upGIT.git .
-cd upGIT
+git clone https://github.com/afanyuy-caleb/upGIT-code.git .
+cd upGIT-code
 ```
 
 2. Create a virtual environment
@@ -30,7 +30,7 @@ pip install -r requirements.txt
 
 5. Set up environment variables:
 ```
-Add and Edit `.env` with your specific configuration.
+Add and Edit `.env` with your specific github account configuration (token, username, email) and the chunk suffix.
 ```
 
 6. Add the virtual environment and .env to the .gitignore file

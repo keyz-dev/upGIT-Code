@@ -8,10 +8,13 @@ import socket
 import uuid    
 
 class CLI():
-    def __init__(self, local_dir, branch_name):
+    def __init__(self, local_dir, branch_name, user):
         self.local_dir = local_dir
+        self.user_email = user.email
+        self.user_name = user.name
         self.branch_name = branch_name
         pass
+
     def backup(self, local_dir_id, remote_url):
         self.remote_url = remote_url
         self.chunk_dirs = organize_push_files(dir_path=self.local_dir, folder_id=local_dir_id)
@@ -28,8 +31,26 @@ class CLI():
     
     @cli_decorator
     def init_git(self):
-        return subprocess.run(
+        # initialize git
+        subprocess.run(
             ['git', 'init'], 
+            cwd=self.local_dir, 
+            check=True, 
+            capture_output=True, 
+            text=True
+        )
+
+        # configure the user
+        subprocess.run(
+            ['git', 'config', '--global', 'user.email', self.user_email], 
+            cwd=self.local_dir, 
+            check=True, 
+            capture_output=True, 
+            text=True
+        )
+        
+        subprocess.run(
+            ['git', 'config', '--global', 'user.name', self.user_name], 
             cwd=self.local_dir, 
             check=True, 
             capture_output=True, 
@@ -43,6 +64,7 @@ class CLI():
         EMAIL = os.getenv('GITHUB_EMAIL')
         replacement = f"://{USERNAME}:{PAT}@"
         url = self.remote_url.replace("://", replacement)
+        # Check if the folder has a remote repo set
         result = subprocess.run(
             ['git', 'remote', '-v'], 
             cwd=self.local_dir, 
@@ -50,6 +72,7 @@ class CLI():
             check=True, 
             text=True
         )
+        
         if url not in result.stdout.strip():
             return subprocess.run(
                 ['git', 'remote', 'add', 'origin', url], 
@@ -58,7 +81,7 @@ class CLI():
                 check=True, 
                 text=True
             ).stdout.strip()  
-    
+
     @cli_decorator
     def create_branch(self):
         # check if branch exists
@@ -137,9 +160,12 @@ class CLI():
             raise Exception("no internet connection found, push failed")
 
     @cli_decorator
-    def pull(self):
+    def pull(self, remote_url = None):
         self.init_git()
-        subprocess.run(['git', 'reset', '--hard', f'origin/{self.branch_name}'], cwd=self.local_dir, capture_output=True, check=True)
+        if remote_url not in [None, '', False, []]:
+            self.remote_url = remote_url
+            self.add_remote()
+            self.create_branch()    
     
         if self.is_connected():
             result = subprocess.run(
@@ -148,12 +174,13 @@ class CLI():
                 capture_output=True, 
                 check=True, 
                 text=True
-            ).stdout.strip()
-            if result:
-                self.chunk_dirs = organize_pull_files(self.local_dir)
-                if self.chunk_dirs not in [None, [], '', False]:
-                    self.delete_chunk()
-                logger.info("Pull operation successful")
+            )
+            
+            self.chunk_dirs = organize_pull_files(self.local_dir)
+            if self.chunk_dirs not in [None, [], '', False]:
+                self.delete_chunk()
+            logger.info("Pull operation successful")
+            return True
         else:
             raise Exception("no internet connection found, pull failed")
         

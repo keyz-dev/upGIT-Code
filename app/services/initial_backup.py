@@ -3,8 +3,7 @@ from app.schema.user import User
 from app.controllers import (
     remote_repo as remote_repo_controller, 
     branch as branch_controller, 
-    local_repo as local_repo_controller, 
-    local_branch as local_branch_controller
+    local_repo as local_repo_controller
 )
 from app.utils.decorator import global_exception_handler
 import os, re
@@ -33,7 +32,7 @@ def check_branch(branch_name, repo_id):
         return branch_exists
    
 @global_exception_handler
-def check_folder(backup_object, user_id):
+def check_folder(backup_object, user_id, branch_id):
     global is_new_folder
     if not os.path.isdir(backup_object['path']):
         raise Exception("Not a directory")
@@ -55,7 +54,8 @@ def check_folder(backup_object, user_id):
     folder_object = {
         'name': backup_object['path'],
         'user_id': user_id,
-        'backup_frequency': freq
+        'backup_frequency': freq,
+        'branch_id': branch_id
     }
     condition = [LocalRepo.user_id == user_id, LocalRepo.name == backup_object['path']]
     created_folder = local_repo_controller.get_conditional(condition=condition, limit=1)
@@ -64,18 +64,6 @@ def check_folder(backup_object, user_id):
         is_new_folder = True
     
     return created_folder
-
-@global_exception_handler
-def handle_local_branch(repo_id, branch_id):
-    global is_new_branch
-    global is_new_folder
-    
-    local_branch_object = {
-    'repo_id': repo_id,
-    'branch_id': branch_id
-    }
-    if is_new_folder or is_new_branch:
-        local_branch_controller.save(local_branch_object)
         
 @global_exception_handler           
 def new_backup(user : User, backup_object, repo):
@@ -83,14 +71,13 @@ def new_backup(user : User, backup_object, repo):
     global is_new_folder
     # get branch id
     branch_info = check_branch(backup_object['branch_name'], repo.id)
-    created_folder = check_folder(backup_object, user.id)
-    handle_local_branch(created_folder.id, branch_info.id)
+    created_folder = check_folder(backup_object, user.id, branch_info.id)
     
-    return backup(folder=created_folder, branch=branch_info, repo=repo)
+    return backup(folder=created_folder, branch=branch_info, repo=repo, user=user)
     
 @global_exception_handler
-def backup(folder, branch, repo):
-    cli = CLI(local_dir=folder.name, branch_name=branch.name)
+def backup(folder, branch, repo, user):
+    cli = CLI(local_dir=folder.name, branch_name=branch.name, user=user)
     cli.backup(local_dir_id=folder.id, remote_url=repo.clone_url)
     
     """update the local_repo's backup status"""

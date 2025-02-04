@@ -6,7 +6,7 @@ from app.controllers import file as file_controller
 
 to_be_deleted = []
 main_dir = None
-max_filesize = 1 * 1024 * 1024
+max_filesize = 2.5 * 1024 * 1024
 def organize_push_files(dir_path, folder_id, subdir=False):
     global to_be_deleted
     global main_dir
@@ -78,6 +78,7 @@ def organize_pull_files(dir_path, subdir=False):
         global to_be_deleted
         if not subdir:
             main_dir = dir_path
+            
         filelist = os.listdir(dir_path)
         folders = [file for file in filelist if os.path.isdir(os.path.join(dir_path, file)) and file != '.git']
         
@@ -85,8 +86,10 @@ def organize_pull_files(dir_path, subdir=False):
             if folder.endswith(os.getenv('CHUNK_SUFFIX')):
                 """add folder path to the to-be-deleted list and merget the contents"""
                 merged_filename = folder.replace(os.getenv('CHUNK_SUFFIX'), '')
+                
                 chunk_dir = os.path.join(dir_path, folder)
                 chunk_files = os.listdir(chunk_dir)
+                
                 # Get the filename extension
                 chunk_file = chunk_files[0]
                 chunk_file_ext = os.path.splitext(chunk_file)[1]
